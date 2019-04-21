@@ -46,15 +46,16 @@ def load_embeddings(embeddings_path):
     # Note that here you also need to know the dimension of the loaded embeddings.
     # When you load the embeddings, use numpy.float32 type as dtype
 
-    ########################
-    #### YOUR CODE HERE ####
-    ########################
+    embeddings = {}
+    
+    for line in open(embeddings_path, encoding = 'utf-8'):
+        row = line.split('\t')
+        embeddings[row[0]] = np.array(row[1:], dtype=np.float32)
+    
+    
+    embeddings_dim = next(iter(embeddings.values())).shape[0]
 
-    # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
+    return embeddings, embeddings_dim
 
 
 def question_to_vec(question, embeddings, dim):
@@ -62,15 +63,17 @@ def question_to_vec(question, embeddings, dim):
     
     # Hint: you have already implemented exactly this function in the 3rd assignment.
 
-    ########################
-    #### YOUR CODE HERE ####
-    ########################
-
-    # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
+    mean_vect = np.zeros(dim)
+    count = 0
+    for word in question.split():
+        if word in embeddings:
+            mean_vect += embeddings[word]
+            count +=1
+            
+    if(count>0):
+        mean_vect /= count
+    
+    return mean_vect
 
 
 def unpickle_file(filename):
